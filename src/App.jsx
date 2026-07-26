@@ -101,7 +101,7 @@ function initials(name) {
 }
 function buildVotes() {
   return CATEGORIES.reduce((acc,cat)=>{
-    acc[cat.id]=cat.nominees.reduce((nm,name)=>{nm[name]=Math.floor(Math.random()*200)+10;return nm;},{});
+    acc[cat.id]=cat.nominees.reduce((nm,name)=>{nm[name]=0;return nm;},{});
     return acc;
   },{});
 }
@@ -667,23 +667,8 @@ export default function AwardsCNJ() {
 
   // ── PAIEMENT
   // ── COMPOSANT CHAMP TÉLÉPHONE AVEC DÉTECTION
-  const PhoneInput = () => (
-    <div>
-      <label className="lbl">Numéro Mobile Money</label>
-      <div className="phone-wrap">
-        <input className="inp inp-phone" type="tel" placeholder="677000000"
-          value={phone} maxLength={9}
-          onChange={e => handlePhone(e.target.value)} />
-        {phone.length >= 3 && (
-          <span className={`phone-operator ${operator || "unknown"}`}>
-            {operator === "mtn" && "🟡 MTN MoMo"}
-            {operator === "orange" && "🟠 Orange"}
-            {!operator && "❓ Inconnu"}
-          </span>
-        )}
-      </div>
-    </div>
-  );
+  // Détection opérateur affichée séparément via OperatorBanner
+  // Le champ téléphone est rendu inline pour éviter le problème de focus
 
   // ── BANNIÈRE OPÉRATEUR DÉTECTÉ
   const OperatorBanner = () => {
@@ -1160,7 +1145,19 @@ export default function AwardsCNJ() {
                 <label className="lbl">Ton nom complet</label>
                 <input className="inp" placeholder="Ex: Marie Bello" value={voterName} onChange={e=>setVoterName(e.target.value)}/>
               </div>
-              <PhoneInput />
+              <div>
+                <label className="lbl">Numéro Mobile Money</label>
+                <input
+                  className="inp"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Ex: 677000000"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                />
+                {phone.length === 9 && operator && <div style={{fontSize:11,color:"var(--green)",marginTop:4}}>✓ {operator==="mtn"?"🟡 MTN MoMo":"🟠 Orange Money"} détecté</div>}
+                {phone.length === 9 && !operator && <div style={{fontSize:11,color:"var(--red)",marginTop:4}}>Préfixe non reconnu</div>}
+              </div>
             </div>
             <div style={{marginBottom:14}}>
               <label className="lbl">Email (optionnel)</label>
@@ -1304,7 +1301,19 @@ export default function AwardsCNJ() {
             <div className="form-row">
               <div><label className="lbl">Nom complet</label>
                 <input className="inp" placeholder="Ex: Marie Bello" value={voterName} onChange={e=>setVoterName(e.target.value)}/></div>
-              <PhoneInput />
+              <div>
+                <label className="lbl">Numéro Mobile Money</label>
+                <input
+                  className="inp"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Ex: 677000000"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                />
+                {phone.length === 9 && operator && <div style={{fontSize:11,color:"var(--green)",marginTop:4}}>✓ {operator==="mtn"?"🟡 MTN MoMo":"🟠 Orange Money"} détecté</div>}
+                {phone.length === 9 && !operator && <div style={{fontSize:11,color:"var(--red)",marginTop:4}}>Préfixe non reconnu</div>}
+              </div>
             </div>
             <div style={{marginBottom:14}}>
               <label className="lbl">Email (optionnel)</label>
